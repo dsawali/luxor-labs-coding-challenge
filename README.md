@@ -3,24 +3,25 @@
 This is my (Davis Sawali's) submission for the Luxor Full-stack Applications Challenge.
 
 ## Getting Started
-1. Prerequisites
-  Ensure you have Docker and Node.js installed. During the implementation of this project, the Node version being used was `v22.13.0` and NPM version was `v10.9.2`
+1. Prerequisites<br>
+Ensure you have Docker and Node.js installed. During the implementation of this project, the Node version being used was `v22.13.0` and NPM version was `v10.9.2`
 
 2. Clone this repository
 ```bash
-git clone <repository-url>
+git clone git@github.com:dsawali/luxor-labs-coding-challenge.git
 ```
 
-3. Spin up the Docker container for the PostgreSQL database
+3. Install dependencies
+```bash
+npm install
+```
+
+4. Spin up the Docker container for the PostgreSQL database
 
 ```bash 
 docker compose up -d`
 ```  
 
-4. Install dependencies
-```bash
-npm install
-```
 
 5. Run prisma commands to make sure your Database environment is set up correctly
 ```bash
