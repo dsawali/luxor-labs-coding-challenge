@@ -5,7 +5,7 @@ This is my (Davis Sawali's) submission for the Luxor Full-stack Applications Cha
 ## Getting Started
 
 1. Prerequisites<br>
-   Ensure you have Docker and Node.js installed. During the implementation of this project, the Node version being used was `v22.13.0` and NPM version was `v10.9.2`
+   Ensure you have Docker and Node.js installed. The current latest LTS should work (Node `v24.14.0`, NPM `v11.9.0`, audited for vulnerabilities). The initial work was done using Node `v22.13.0`, NPM `v10.9.2`. But at the end, it was updated to be compatible with the latest LTS. Having these versions listed might help when there are Node failures and/or vulnerabilities.
 
 2. Clone this repository
 
