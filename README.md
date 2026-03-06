@@ -96,7 +96,7 @@ For the system to scale and grow from ~100 collections to ~1M collections and mi
   1. Lazy loading: We can implement lazy loading to only load data when needed, especially for large static assets.
   2. Cursor pagination: Using cursor based pagination instead of offset can make calls very efficient because it only fetches the next set of results after a certain identifier, making it a better choice for applications with large datasets.
 
-### Trade-offs you had to choose when doing this challenge (the things you would do different with more time and resources)
+### 3. Trade-offs you had to choose when doing this challenge (the things you would do different with more time and resources)
 Given the 24 hour window I had to complete the challenge, there are some conscious engineering decisions I had to make in order to deliver a fully functional product.
 
 1. **API implementation** - Instead of using server actions for the API, I would opt for a completely separate implementation for the API. A decoupled RESTful/GraphQL API that is consumable by any front-end. In that case, if the application needs to scale to other platforms (mobile, tablets, etc), it will simply just consume the endpoints available.
