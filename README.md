@@ -125,3 +125,7 @@ Given the 24 hour window I had to complete the challenge, there are some conscio
 
 5. **Custom animations and UX** - Aside from performance and scalability, it would also be nice to make the website more pleasant to use. Adding custom loading animations, taking deep care for the overall design language of the website. <br><br>
    For this assignment, I opted to only make the website mobile responsive.
+
+6. **Testing** - For the purpose of the assignment, I didn't implement any testing. Given more time and resources, I would implement a full testing suite with proper test coverage, including unit tests, integration tests, and end-to-end tests.
+
+7. **Docker Volume** - I opted to not use a Docker volume to persist the database data. Given that this assignment is a one-time implementation, it seemed unnecessary since the user/examiner will have to seed the database in the beginning for testing.
