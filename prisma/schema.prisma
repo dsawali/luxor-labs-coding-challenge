@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id          String       @id @default(cuid())
+  name        String
+  email       String       @unique
+  collections Collection[] // Assuming user can own collections
+  bids        Bid[]
+}
+
+model Collection {
+  id           String   @id @default(cuid())
+  name         String
+  descriptions String
+  stocks       Int
+  price        Float
+  userId       String   // Owner of the collection
+  user         User     @relation(fields: [userId], references: [id])
+  bids         Bid[]
+}
+
+model Bid {
+  id           String   @id @default(cuid())
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [id])
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  price        Float
+  status       String   @default("pending") // pending, accepted, rejected
+}
