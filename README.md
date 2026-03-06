@@ -19,7 +19,7 @@ npm install
 4. Spin up the Docker container for the PostgreSQL database
 
 ```bash 
-docker compose up -d`
+docker compose up -d
 ```  
 
 
