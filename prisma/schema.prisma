@@ -32,12 +32,18 @@ model Collection {
   bids         Bid[]
 }
 
+enum BidStatus {
+  pending
+  accepted
+  rejected
+}
+
 model Bid {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   collectionId String
   collection   Collection @relation(fields: [collectionId], references: [id])
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
+  user         User      @relation(fields: [userId], references: [id])
   price        Float
-  status       String   @default("pending") // pending, accepted, rejected
+  status       BidStatus @default(pending)
 }

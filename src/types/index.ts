@@ -7,7 +7,7 @@ export interface Bid {
   id: string;
   userId: string;
   price: number;
-  status: string;
+  status: 'pending' | 'accepted' | 'rejected';
   user: User;
 }
 

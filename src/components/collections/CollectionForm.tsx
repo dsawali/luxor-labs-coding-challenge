@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { createCollection, updateCollection } from '@/app/actions/collections';
+import { Collection } from '@/types';
 
 export default function CollectionForm({
   initialData,
@@ -9,7 +10,7 @@ export default function CollectionForm({
   userName,
   onSuccess,
 }: {
-  initialData?: any;
+  initialData?: Partial<Collection>;
   userId: string;
   userName?: string;
   onSuccess: () => void;
