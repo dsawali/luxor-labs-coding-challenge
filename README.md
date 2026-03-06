@@ -47,26 +47,6 @@ npx prisma db seed // Seed the database with initial data
 npm run dev
 ```
 
-## Project Structure
-
-```
-src/
-├── app/              # Next.js App Router (Pages & Server Actions)
-│   ├── actions/      # Server Actions (CRUD operations)
-│   ├── api/          # API Routes (if any)
-│   └── page.tsx      # Main dashboard page
-├── components/       # Reusable UI components
-│   ├── collections/  # Collection-related components
-│   ├── bids/         # Bid-related components
-│   └── ui/           # Generic UI components (Modal, Button, etc.)
-├── lib/              # Utility functions
-│   └── db.ts         # Prisma client initialization
-├── prisma/           # Prisma configuration
-│   ├── schema.prisma # Database schema
-│   └── seed.ts       # Database seed script
-└── types/            # TypeScript type definitions
-```
-
 ## Questions and Answers
 
 ### 1. How would you monitor the application to ensure it is running smoothly?
