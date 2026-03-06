@@ -3,11 +3,9 @@
 import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 
-
 export async function getCollections(page: number = 1, pageSize: number = 10) {
   const skip = (page - 1) * pageSize;
 
-  // Fetch data and total count in parallel for performance
   const [collections, totalCount] = await prisma.$transaction([
     prisma.collection.findMany({
       take: pageSize,
@@ -25,7 +23,14 @@ export async function getCollections(page: number = 1, pageSize: number = 10) {
   };
 }
 
-export async function createCollection(data: { name: string; descriptions: string; stocks: number; price: number; userId: string; userName?: string }) {
+export async function createCollection(data: {
+  name: string;
+  descriptions: string;
+  stocks: number;
+  price: number;
+  userId: string;
+  userName?: string;
+}) {
   // Ensure the user exists (since the frontend may pass a hardcoded mock user ID)
   // This prevents the "foreign key constraint violated" error.
   const userName = data.userName || 'Mock User';
@@ -45,14 +50,22 @@ export async function createCollection(data: { name: string; descriptions: strin
       descriptions: data.descriptions,
       stocks: data.stocks,
       price: data.price,
-      userId: data.userId
-    }
+      userId: data.userId,
+    },
   });
   revalidatePath('/');
   return collection;
 }
 
-export async function updateCollection(id: string, data: Partial<{ name: string; descriptions: string; stocks: number; price: number }>) {
+export async function updateCollection(
+  id: string,
+  data: Partial<{
+    name: string;
+    descriptions: string;
+    stocks: number;
+    price: number;
+  }>,
+) {
   const collection = await prisma.collection.update({ where: { id }, data });
   revalidatePath('/');
   return collection;
@@ -65,8 +78,6 @@ export async function deleteCollection(id: string) {
   revalidatePath('/');
 }
 
-// --- BID ACTIONS ---
-
 export async function getBids(collectionId: string) {
   return await prisma.bid.findMany({
     where: { collectionId },
@@ -75,8 +86,13 @@ export async function getBids(collectionId: string) {
   });
 }
 
-export async function createBid(data: { collectionId: string; userId: string; price: number; userName?: string }) {
-  // Ensure the user exists for the bid too
+export async function createBid(data: {
+  collectionId: string;
+  userId: string;
+  price: number;
+  userName?: string;
+}) {
+
   const userName = data.userName || 'Mock User';
   await prisma.user.upsert({
     where: { id: data.userId },
@@ -93,8 +109,8 @@ export async function createBid(data: { collectionId: string; userId: string; pr
       collectionId: data.collectionId,
       userId: data.userId,
       price: data.price,
-      status: 'pending'
-    }
+      status: 'pending',
+    },
   });
   revalidatePath('/');
   return bid;
@@ -103,7 +119,7 @@ export async function createBid(data: { collectionId: string; userId: string; pr
 export async function updateBid(id: string, price: number) {
   const bid = await prisma.bid.update({
     where: { id },
-    data: { price }
+    data: { price },
   });
   revalidatePath('/');
   return bid;
@@ -114,11 +130,9 @@ export async function deleteBid(id: string) {
   revalidatePath('/');
 }
 
-// --- THE "ACCEPT" LOGIC ---
-
+// Accept bid logic
 export async function acceptBid(bidId: string, collectionId: string) {
   try {
-    // Transaction ensures both operations happen or none do
     await prisma.$transaction([
       // 1. Mark the chosen bid as accepted
       prisma.bid.update({

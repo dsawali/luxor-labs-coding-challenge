@@ -1,18 +1,23 @@
-'use server';
+"use server";
 
-import { prisma } from '@/lib/db';
-import { revalidatePath } from 'next/cache';
+import { prisma } from "@/lib/db";
+import { revalidatePath } from "next/cache";
 
 export async function getBids(collectionId: string) {
   return await prisma.bid.findMany({
     where: { collectionId },
     include: { user: true },
-    orderBy: { price: 'desc' },
+    orderBy: { price: "desc" },
   });
 }
 
-export async function createBid(data: { collectionId: string; userId: string; price: number; userName?: string }) {
-  const userName = data.userName || 'Mock User';
+export async function createBid(data: {
+  collectionId: string;
+  userId: string;
+  price: number;
+  userName?: string;
+}) {
+  const userName = data.userName || "Mock User";
   await prisma.user.upsert({
     where: { id: data.userId },
     update: { name: userName },
@@ -28,50 +33,49 @@ export async function createBid(data: { collectionId: string; userId: string; pr
       collectionId: data.collectionId,
       userId: data.userId,
       price: data.price,
-      status: 'pending'
-    }
+      status: "pending",
+    },
   });
-  revalidatePath('/');
+  revalidatePath("/");
   return bid;
 }
 
 export async function updateBid(id: string, price: number) {
   const bid = await prisma.bid.update({
     where: { id },
-    data: { price }
+    data: { price },
   });
-  revalidatePath('/');
+  revalidatePath("/");
   return bid;
 }
 
 export async function deleteBid(id: string) {
   await prisma.bid.delete({ where: { id } });
-  revalidatePath('/');
+  revalidatePath("/");
 }
 
 export async function acceptBid(bidId: string, collectionId: string) {
   try {
-    // Transaction ensures both operations happen or none do
     await prisma.$transaction([
-      // 1. Mark the chosen bid as accepted
+      // Mark the chosen bid as accepted
       prisma.bid.update({
         where: { id: bidId },
-        data: { status: 'accepted' },
+        data: { status: "accepted" },
       }),
-      // 2. Reject all other bids for this specific collection
+      // Reject all other bids for this specific collection
       prisma.bid.updateMany({
         where: {
           collectionId,
           id: { not: bidId },
         },
-        data: { status: 'rejected' },
+        data: { status: "rejected" },
       }),
     ]);
 
-    revalidatePath('/');
+    revalidatePath("/");
     return { success: true };
   } catch (error) {
     console.error(error);
-    return { success: false, error: 'Failed to accept bid' };
+    return { success: false, error: "Failed to accept bid" };
   }
 }

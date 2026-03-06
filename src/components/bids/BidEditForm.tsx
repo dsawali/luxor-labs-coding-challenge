@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { updateBid } from '@/app/actions/bids';
+import { useState } from "react";
+import { updateBid } from "@/app/actions/bids";
 
 export default function BidEditForm({
   bidId,
@@ -21,10 +21,10 @@ export default function BidEditForm({
     setError(null);
 
     const formData = new FormData(e.currentTarget);
-    const price = parseFloat(formData.get('price') as string);
+    const price = parseFloat(formData.get("price") as string);
 
     if (isNaN(price) || price <= 0) {
-      setError('Please enter a valid bid amount.');
+      setError("Please enter a valid bid amount.");
       setLoading(false);
       return;
     }
@@ -33,7 +33,7 @@ export default function BidEditForm({
       await updateBid(bidId, price);
       onSuccess();
     } catch {
-      setError('Failed to update bid. Please try again.');
+      setError("Failed to update bid. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -67,7 +67,7 @@ export default function BidEditForm({
         disabled={loading}
         className="w-full bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition disabled:opacity-50"
       >
-        {loading ? 'Updating...' : 'Update Bid'}
+        {loading ? "Updating..." : "Update Bid"}
       </button>
     </form>
   );

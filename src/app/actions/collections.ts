@@ -6,7 +6,6 @@ import { revalidatePath } from 'next/cache';
 export async function getCollections(page: number = 1, pageSize: number = 10) {
   const skip = (page - 1) * pageSize;
 
-  // Fetch data and total count in parallel for performance
   const [collections, totalCount] = await prisma.$transaction([
     prisma.collection.findMany({
       take: pageSize,
@@ -24,9 +23,14 @@ export async function getCollections(page: number = 1, pageSize: number = 10) {
   };
 }
 
-export async function createCollection(data: { name: string; descriptions: string; stocks: number; price: number; userId: string; userName?: string }) {
-  // Ensure the user exists (since the frontend may pass a hardcoded mock user ID)
-  // This prevents the "foreign key constraint violated" error.
+export async function createCollection(data: {
+  name: string;
+  descriptions: string;
+  stocks: number;
+  price: number;
+  userId: string;
+  userName?: string;
+}) {
   const userName = data.userName || 'Mock User';
   await prisma.user.upsert({
     where: { id: data.userId },
@@ -44,14 +48,24 @@ export async function createCollection(data: { name: string; descriptions: strin
       descriptions: data.descriptions,
       stocks: data.stocks,
       price: data.price,
-      userId: data.userId
-    }
+      userId: data.userId,
+    },
   });
   revalidatePath('/');
   return collection;
 }
 
-export async function updateCollection(id: string, data: Partial<{ name: string; descriptions: string; stocks: number; price: number; userId?: string; userName?: string }>) {
+export async function updateCollection(
+  id: string,
+  data: Partial<{
+    name: string;
+    descriptions: string;
+    stocks: number;
+    price: number;
+    userId?: string;
+    userName?: string;
+  }>,
+) {
   // Destructure to only pass fields that exist on the Collection model.
   // The form also sends `userId` and `userName`, which are not updatable collection fields.
   const { name, descriptions, stocks, price } = data;
