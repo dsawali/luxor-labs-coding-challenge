@@ -15,28 +15,48 @@ export default function CollectionForm({
   onSuccess: () => void;
 }) {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoading(true);
+    setError(null);
+
     const formData = new FormData(e.currentTarget);
+    const price = parseFloat(formData.get('price') as string);
+    const stocks = parseInt(formData.get('stocks') as string);
+
+    // Client-side validation
+    if (isNaN(price) || price <= 0) {
+      setError('Base price must be greater than $0.00.');
+      return;
+    }
+    if (isNaN(stocks) || stocks < 1) {
+      setError('Stock quantity must be at least 1.');
+      return;
+    }
+
+    setLoading(true);
     const payload = {
       name: formData.get('name') as string,
       descriptions: formData.get('descriptions') as string,
-      price: parseFloat(formData.get('price') as string),
-      stocks: parseInt(formData.get('stocks') as string),
-      userId: userId,
-      userName: userName,
+      price,
+      stocks,
+      userId,
+      userName,
     };
 
-    if (initialData?.id) {
-      await updateCollection(initialData.id, payload);
-    } else {
-      await createCollection(payload);
+    try {
+      if (initialData?.id) {
+        await updateCollection(initialData.id, payload);
+      } else {
+        await createCollection(payload);
+      }
+      onSuccess();
+    } catch {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
-    onSuccess();
   }
 
   return (
@@ -74,6 +94,7 @@ export default function CollectionForm({
             name="price"
             type="number"
             step="0.01"
+            min="0.01"
             defaultValue={initialData?.price}
             required
             className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"
@@ -86,12 +107,16 @@ export default function CollectionForm({
           <input
             name="stocks"
             type="number"
+            min="1"
             defaultValue={initialData?.stocks}
             required
             className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"
           />
         </div>
       </div>
+
+      {error && <p className="text-red-500 text-xs font-semibold">{error}</p>}
+
       <button
         type="submit"
         disabled={loading}

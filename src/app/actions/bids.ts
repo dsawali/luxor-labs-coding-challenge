@@ -17,6 +17,10 @@ export async function createBid(data: {
   price: number;
   userName?: string;
 }) {
+  if (!data.price || data.price <= 0) {
+    throw new Error('Bid price must be greater than 0.');
+  }
+
   const userName = data.userName || "Mock User";
   await prisma.user.upsert({
     where: { id: data.userId },
@@ -41,6 +45,10 @@ export async function createBid(data: {
 }
 
 export async function updateBid(id: string, price: number) {
+  if (!price || price <= 0) {
+    throw new Error('Bid price must be greater than 0.');
+  }
+
   const bid = await prisma.bid.update({
     where: { id },
     data: { price },

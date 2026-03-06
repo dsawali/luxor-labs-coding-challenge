@@ -31,6 +31,10 @@ export async function createCollection(data: {
   userId: string;
   userName?: string;
 }) {
+  if (!data.price || data.price <= 0) {
+    throw new Error('Bid price must be greater than 0.');
+  }
+
   const userName = data.userName || 'Mock User';
   await prisma.user.upsert({
     where: { id: data.userId },
@@ -66,8 +70,9 @@ export async function updateCollection(
     userName?: string;
   }>,
 ) {
-  // Destructure to only pass fields that exist on the Collection model.
-  // The form also sends `userId` and `userName`, which are not updatable collection fields.
+  if (!data.price || data.price <= 0) {
+    throw new Error('Bid price must be greater than 0.');
+  }
   const { name, descriptions, stocks, price } = data;
   const collection = await prisma.collection.update({
     where: { id },
@@ -78,8 +83,9 @@ export async function updateCollection(
 }
 
 export async function deleteCollection(id: string) {
-  // We must delete associated bids first, or use "onDelete: Cascade" in Prisma schema
-  await prisma.bid.deleteMany({ where: { collectionId: id } });
-  await prisma.collection.delete({ where: { id } });
+  await prisma.$transaction([
+    prisma.bid.deleteMany({ where: { collectionId: id } }),
+    prisma.collection.delete({ where: { id } }),
+  ]);
   revalidatePath('/');
 }
